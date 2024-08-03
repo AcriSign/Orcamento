@@ -89,18 +89,10 @@ document.addEventListener('DOMContentLoaded', function() {
         resultTable.style.display = 'table';
         notification.style.display = 'block';
 
+        // Show and update the total price row
         const totalRow = document.getElementById('total-price-row');
-        if (totalRow) {
-            totalRow.querySelector('.total-price').textContent = `R$ ${totalPrice.toFixed(2)}`;
-        } else {
-            const newTotalRow = document.createElement('tr');
-            newTotalRow.id = 'total-price-row';
-            newTotalRow.innerHTML = `
-                <td colspan="10" style="text-align: left;"><strong>Total:</strong></td>
-                <td class="total-price">R$ ${totalPrice.toFixed(2)}</td>
-            `;
-            resultTableBody.appendChild(newTotalRow);
-        }
+        totalRow.style.display = 'table-row'; // Show the total row
+        totalRow.querySelector('.total-price').textContent = `R$ ${totalPrice.toFixed(2)}`;
     });
 
     startNewCalculationButton.addEventListener('click', function() {
@@ -108,6 +100,8 @@ document.addEventListener('DOMContentLoaded', function() {
         updateVisibility();
         resultTableBody.innerHTML = '';
         totalPrice = 0; // Reset total price
+        // Hide the total price row
+        document.getElementById('total-price-row').style.display = 'none';
         resultTable.style.display = 'none';
         notification.style.display = 'none';
         errorMessage.style.display = 'none';
