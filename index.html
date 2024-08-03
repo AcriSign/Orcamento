@@ -78,7 +78,8 @@
         </form>
 
         <div id="error-message" class="error-message">Todos os campos devem ser preenchidos e os valores devem ser maiores que 2 cm para calcular o valor do produto.</div>
-        
+        <div id="notification" class="notification">Atenção: Todos os produtos são fabricados sob encomenda e não são passíveis de troca ou devolução após a confirmação do pagamento.</div>
+
         <table id="result-table">
             <thead>
                 <tr>
@@ -96,26 +97,14 @@
                 </tr>
             </thead>
             <tbody id="result-table-body"></tbody>
-            <tfoot>
-                <tr id="total-row">
-                    <td colspan="10">Total</td>
-                    <td id="total-price">R$ 0,00</td>
-                </tr>
-            </tfoot>
 
-            <div id="company-info" class="company-info">
-                <p><strong>Informações da Empresa:</strong></p>
-                <p><a href="https://www.acrisign.com.br" target="_blank">Nosso Site</a></p>
-                <p><a href="https://api.whatsapp.com/send?phone=55123456789" target="_blank">WhatsApp: +55 12 3456-7890</a></p>
-                <p><a href="https://maps.google.com/?q=Rua+Exemplo,+123,+Córtega,+Brazil" target="_blank">Nossa Localização</a></p>
-            </div>
         </table>
+        <div id="company-info" class="company-info">
+            <p>&copy; 2024 Acrisign. Todos os direitos reservados.</p>
+            <p><a href="https://www.acrisign.com.br" target="_blank">Site da Empresa</a> | <a href="https://wa.me/5551991234567" target="_blank">WhatsApp</a> | <a href="https://goo.gl/maps/xyz" target="_blank">Localização</a></p>
+        </div>
     </div>
     
-    <div class="notification" id="notification">Produtos personalizados não podem ser devolvidos.</div>
-
-
-
     <script src="scripts.js"></script>
 </body>
 </html>

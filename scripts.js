@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const patternContainer = document.getElementById('patternContainer');
     const templateContainer = document.getElementById('templateContainer');
 
+    let totalPrice = 0;
+
     const roundToNearestMultiple = (num, multiple) => Math.round(num / multiple) * multiple;
 
     function updateVisibility() {
@@ -65,6 +67,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         price = roundToNearestMultiple(price, 5);
 
+        totalPrice += price;
+
         const newRow = document.createElement('tr');
         const today = new Date();
         const verificationDate = new Date(today);
@@ -84,12 +88,26 @@ document.addEventListener('DOMContentLoaded', function() {
         resultTableBody.appendChild(newRow);
         resultTable.style.display = 'table';
         notification.style.display = 'block';
+
+        const totalRow = document.getElementById('total-price-row');
+        if (totalRow) {
+            totalRow.querySelector('.total-price').textContent = `R$ ${totalPrice.toFixed(2)}`;
+        } else {
+            const newTotalRow = document.createElement('tr');
+            newTotalRow.id = 'total-price-row';
+            newTotalRow.innerHTML = `
+                <td colspan="10" style="text-align: left;"><strong>Total:</strong></td>
+                <td class="total-price">R$ ${totalPrice.toFixed(2)}</td>
+            `;
+            resultTableBody.appendChild(newTotalRow);
+        }
     });
 
     startNewCalculationButton.addEventListener('click', function() {
         form.reset();
         updateVisibility();
         resultTableBody.innerHTML = '';
+        totalPrice = 0; // Reset total price
         resultTable.style.display = 'none';
         notification.style.display = 'none';
         errorMessage.style.display = 'none';
@@ -166,12 +184,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 </header>
                 <div class="container printable">
                     ${document.getElementById('result-table').outerHTML}
-                </div>
-                <div class="notification">
+                    <div class="notification">
                     ${document.getElementById('notification').innerHTML}
-                </div>
-                <div class="company-info">
+                    </div>
+                    <div class="company-info">
                     ${document.getElementById('company-info').innerHTML}
+                </div>
                 </div>
             </body>
             </html>
