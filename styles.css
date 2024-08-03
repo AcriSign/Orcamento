@@ -17,7 +17,7 @@ header {
     height: auto;
 }
 .container {
-    max-width: 1000px;
+    max-width: 80px auto;
     margin: 20px auto;
     padding: 20px;
     background-color: white;

@@ -130,7 +130,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         height: auto;
                     }
                     .container {
-                        width: 100%;
+                        width: auto;
+                        height: auto;
                     }
                     table {
                         width: 100%;
