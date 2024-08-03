@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orçamento do Produto</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: white;
+            color: #51A8B1;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+        }
+        .container {
+            max-width: 900px ;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="number"], input[type="text"], input[type="radio"] {
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: calc(100% - 16px);
+            box-sizing: border-box;
+        }
+        input[type="radio"] {
+            width: auto;
+        }
+        .radio-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .radio-group label {
+            margin: 0 10px;
+        }
+        button {
+            background-color: #51A8B1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #3e8e8e;
+        }
+        #result-table {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+            display: none;
+        }
+        #result-table th, #result-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        #result-table th {
+            background-color: #51A8B1;
+            color: white;
+        }
+        #total-row {
+            font-weight: bold;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .company-info {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #333;
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .company-info p {
+            margin: 5px 0;
+        }
+        .company-info a {
+            color: #51A8B1;
+            text-decoration: none;
+        }
+        .company-info a:hover {
+            text-decoration: underline;
+        }
+        .notification {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #5C0120;
+            color: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            header, #result-table, .company-info {
+                visibility: visible;
+            }
+            header {
+                position: fixed;
+                top: 0;
+                width: 100%;
+            }
+            .company-info {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+            #result-table {
+                margin-top: 60px;
+                margin-bottom: 60px;
+            }
+            @page {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="https://dcdn.mitiendanube.com/stores/001/733/837/themes/amazonas/1-img-934205408-1690839010-8d9b95d5116720928eda0072effd58b91690839011-480-0.png?900093959" alt="Acrisign Logo" class="logo">
+            <h1>Orçamento do Produto</h1>
+        </div>
+    </header>
+    <div class="container">
+        <form id="priceForm">
+            <div style="display: flex; justify-content: space-between;">
+                <div style="flex: 1; margin-right: 10px;">
+                    <label for="clientName">Nome do Cliente:</label>
+                    <input type="text" id="clientName" required placeholder="ex: João Silva">
+                </div>
+                <div style="flex: 1;">
+                    <label for="SellerName">Nome do Vendedor:</label>
+                    <input type="text" id="SellerName" required placeholder="ex: Gustavo Satos">
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <div style="flex: 1; margin-right: 10px;">
+                    <label for="length">Comprimento em CM:</label>
+                    <input type="number" id="length" step="any" required placeholder="ex: 50.5 cm">
+                </div>
+                <div style="flex: 1;">
+                    <label for="width">Largura em CM:</label>
+                    <input type="number" id="width" step="any" required placeholder="ex: 30.2 cm">
+                </div>
+            </div>
+            <input type="hidden" id="thickness" value="10">
+
+            <div class="radio-group">
+                <label>Produto com Base:</label>
+                <input type="radio" id="baseYes" name="base" value="yes">
+                <label for="baseYes">Sim</label>
+                <input type="radio" id="baseNo" name="base" value="no" checked>
+                <label for="baseNo">Não</label>
+            </div>
+            
+            <div id="backgroundContainer" class="radio-group">
+                <label>Produto com Fundo:</label>
+                <input type="radio" id="backgroundYes" name="background" value="yes">
+                <label for="backgroundYes">Sim</label>
+                <input type="radio" id="backgroundNo" name="background" value="no" checked>
+                <label for="backgroundNo">Não</label>
+            </div>
+            
+            <div id="patternContainer" class="radio-group">
+                <label>Produto com Gravação:</label>
+                <input type="radio" id="patternYes" name="pattern" value="yes">
+                <label for="patternYes">Sim</label>
+                <input type="radio" id="patternNo" name="pattern" value="no" checked>
+                <label for="patternNo">Não</label>
+            </div>
+
+            <div id="templateContainer" class="radio-group">
+                <label>Produto com Gabarito:</label>
+                <input type="radio" id="templateYes" name="template" value="yes">
+                <label for="templateYes">Sim</label>
+                <input type="radio" id="templateNo" name="template" value="no" checked>
+                <label for="templateNo">Não</label>
+            </div>
+
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <button type="button" onclick="calculatePrice()" style="flex: 1; margin-right: 10px;">Calcular Preço</button>
+                <button type="button" onclick="startNewCalculation()" style="flex: 1;">Iniciar Nova Cálculo</button>
+            </div>
+            <button type="button" onclick="printResults()" style="width: 100%;">Imprimir Resultados</button>
+            
+        </form>
+
+        <div id="error-message" class="error-message">Todos os campos devem ser preenchidos e os valores devem ser maiores que 2 cm para calcular o valor do produto.</div>
+        <div id="notification" class="notification">Atenção: Todos os produtos são fabricados sob encomenda e não são passíveis de troca ou devolução após a confirmação do pagamento.</div>
+
+        <table id="result-table">
+            <thead>
+                <tr>
+                    <th>Nome do Cliente</th>
+                    <th>Nome do Vendedor</th>
+                    <th>Dimensões</th>
+                    <th>Produto com Fundo</th>
+                    <th>Produto com Gravação</th>
+                    <th>Produto com Base</th>
+                    <th>Produto com Gabarito</th>
+                    <th>Data</th>
+                    <th>Válido até</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody id="result-body">
+            </tbody>
+            <tfoot>
+                <tr id="total-row">
+                    <td colspan="9">Total</td>
+                    <td id="total-price">R$ 0,00</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="company-info" id="company-info">
+        <p><strong>Website:</strong> <a href="https://acrisign.com.br" target="_blank">acrisign.com.br</a></p>
+        <p><strong>WhatsApp:</strong> <a href="https://wa.me/554195067594" target="_blank">+55 41 9506-7594</a></p>
+        <p><strong>Sede:</strong> <a href="https://maps.app.goo.gl/9G1QtnME4cL6zXYo6" target="_blank">Batel - Curitiba PR</a></p>
+        <p><strong>Localização:</strong> <a href="https://maps.app.goo.gl/RvXfmEPifeaDE61r6" target="_blank">Shopping Palladium - Curitiba Paraná</a></p>
+    </div>
+
+    <script>
+        function roundToNearestMultiple(num, multiple) {
+            return Math.round(num / multiple) * multiple;
+        }
+
+        function convertToDecimal(value) {
+            return parseFloat(value.replace(',', '.')) || 0;
+        }
+        const notification = document.getElementById('notification');
+        function calculatePrice() {
+            const clientName = document.getElementById('clientName').value.trim();
+            const SellerName = document.getElementById('SellerName').value.trim();
+            const length = convertToDecimal(document.getElementById('length').value);
+            const width = convertToDecimal(document.getElementById('width').value);
+            const background = document.querySelector('input[name="background"]:checked').value;
+            const pattern = document.querySelector('input[name="pattern"]:checked').value;
+            const template = document.querySelector('input[name="template"]:checked').value;
+            const base = document.querySelector('input[name="base"]:checked').value;
+
+            // Validation
+            if ( !SellerName || !clientName || isNaN(length) || isNaN(width) || length < 2 || width < 2) {
+                document.getElementById('error-message').style.display = 'block';
+                return;
+            } else {
+                document.getElementById('error-message').style.display = 'none';
+            }
+
+            let price = 0;
+
+            if (base === 'yes') {
+                price = (length + 5) * width * 0.5 / 2;
+            } else {
+                price = (background === 'yes' || pattern === 'yes') ? (length * width * 0.4 / 2) : (length * width * 0.2 / 1.875);
+            }
+            if (template === 'yes') {
+                price += 15;
+            }
+            if (background === 'yes' && pattern === 'yes') {
+                price += 35;
+            }
+            if (length < 40 || width < 40) {
+                price += 40;
+            }
+
+            price = roundToNearestMultiple(price, 5);
+
+            const today = new Date();
+            const validUntil = new Date();
+            validUntil.setMonth(today.getMonth());
+            validUntil.setDate(today.getDate() + 5);
+
+            const formattedToday = today.toLocaleDateString('pt-BR');
+            const formattedValidUntil = validUntil.toLocaleDateString('pt-BR');
+            const formattedPrice = `R$ ${price.toFixed(2).replace('.', ',')}`;
+
+            const resultBody = document.getElementById('result-body');
+            resultBody.innerHTML += `
+                <tr>
+                    <td>${document.getElementById('clientName').value}</td>
+                    <td>${document.getElementById('SellerName').value}</td>
+                    <td>${length} cm x ${width} cm</td>
+                    <td>${background === 'yes' ? 'Sim' : 'Não'}</td>
+                    <td>${pattern === 'yes' ? 'Sim' : 'Não'}</td>
+                    <td>${base === 'yes' ? 'Sim' : 'Não'}</td>
+                    <td>${template === 'yes' ? 'Sim' : 'Não'}</td>
+                    <td>${formattedToday}</td>
+                    <td>${formattedValidUntil}</td>
+                    <td>${formattedPrice}</td>
+                </tr>
+            `;
+
+            const totalPriceElement = document.getElementById('total-price');
+            const currentTotal = convertToDecimal(totalPriceElement.innerText.replace('R$ ', '').replace(',', '.'));
+            totalPriceElement.innerText = `R$ ${(currentTotal + price).toFixed(2).replace('.', ',')}`;
+
+            document.getElementById('result-table').style.display = 'table';
+            notification.style.display = 'block';
+        }
+
+        function addAnotherProduct() {
+            document.getElementById('priceForm').reset();
+            document.getElementById('result-table').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+            notification.style.display = 'block';
+        }
+
+        function startNewCalculation() {
+            document.getElementById('result-body').innerHTML = '';
+            document.getElementById('total-price').innerText = 'R$ 0,00';
+            addAnotherProduct();
+            notification.style.display = 'block';
+        }
+
+        function printResults() {
+    const printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Print Results</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                }
+                header {
+                    background-color: white;
+                    color: #51A8B1;
+                    padding: 20px;
+                    text-align: center;
+                }
+                .logo {
+                    width: 150px;
+                    height: auto;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                }
+                th, td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #51A8B1;
+                    color: white;
+                }
+                .company-info {
+                    margin-top: 20px;
+                    font-size: 12px;
+                    color: #333;
+                    text-align: center;
+                }
+                .company-info a {
+                    color: #51A8B1;
+                    text-decoration: none;
+                }
+                .company-info a:hover {
+                    text-decoration: underline;
+                }
+                .notification {
+                    margin-top: 20px;
+                    padding: 10px;
+                    background-color: #5C0120;
+                    color: #FFFFFF;
+                    border-radius: 8px;
+                    text-align: center;
+                }
+            </style>
+        </head>
+        <body>
+            <header>
+                <div class="logo-container">
+                    <img src="https://dcdn.mitiendanube.com/stores/001/733/837/themes/amazonas/1-img-934205408-1690839010-8d9b95d5116720928eda0072effd58b91690839011-480-0.png?900093959" alt="Acrisign Logo" class="logo">
+                    <h1>Orçamento do Produto</h1>
+                </div>
+            </header>
+            <div class="container printable">
+                ${document.getElementById('result-table').outerHTML}
+            </div>
+            <div class="notification">
+                ${document.getElementById('notification').innerHTML}
+            </div>
+            <div class="company-info">
+                ${document.getElementById('company-info').innerHTML}
+            </div>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+}
+
+        function updateOptionVisibility() {
+            const baseSelected = document.querySelector('input[name="base"]:checked').value === 'yes';
+            document.getElementById('patternContainer').style.display = baseSelected ? 'none' : 'flex';
+            document.getElementById('backgroundContainer').style.display = baseSelected ? 'none' : 'flex';
+            document.getElementById('templateContainer').style.display = baseSelected ? 'none' : 'flex';
+
+        }
+
+        document.querySelectorAll('input[name="base"]').forEach(input => {
+            input.addEventListener('change', updateOptionVisibility);
+        });
+
+        updateOptionVisibility();
+    </script>
+</body>
+</html>
