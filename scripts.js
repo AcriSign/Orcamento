@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 price += (length * width * 0.4 / 2);
             }
             if (template === 'yes') {
-                price += (length * width * 0.3 / 2.5);
+                price += 20;
             }
         }
 
